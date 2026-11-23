@@ -1,0 +1,26 @@
+# --- API prefix, CORS, Jackson timezone, integrações ---
+quarkus:
+  rest:
+    path: /api/v1
+  http:
+    port: 8080
+    cors:
+      enabled: true
+      origins: "*"
+      methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+      headers: accept,authorization,content-type,x-requested-with
+      exposed-headers: location,info,total-count
+      access-control-max-age: 24H
+  jackson:
+    timezone: America/Sao_Paulo
+
+# Monolito Mekano-API (consulta de cliente, veículo, catálogo e estoque).
+# Os REST clients (Fase 3) usam: quarkus.rest-client.mekano-api.url
+mekano:
+  api:
+    url: ${MEKANO_API_URL:http://localhost:8080}
+  events:
+    # Mensageria SNS/SQS (Fase 3). Em dev usa LocalStack.
+    topic-arn: ${OS_EVENTS_TOPIC_ARN:arn:aws:sns:us-east-1:000000000000:os-events.fifo}
+    aws-endpoint: ${AWS_ENDPOINT_OVERRIDE:http://localhost:4566}
+    aws-region: ${AWS_REGION:us-east-1}

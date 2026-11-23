@@ -1,0 +1,11 @@
+# --- OpenAPI / Swagger UI ---
+quarkus:
+  swagger-ui:
+    always-include: true
+
+mp:
+  openapi:
+    info:
+      title: Mekano OS Service API
+      version: 1.0.0
+      description: Microserviço de Ordem de Serviço — Clean Architecture, FIAP Software Architecture

@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: mekano-os-postgres
+    restart: unless-stopped
+    ports:
+      - "5433:5432"   # 5433 para não conflitar com o Postgres do Mekano-API
+    environment:
+      POSTGRES_DB: mekano_os
+      POSTGRES_USER: ${DB_USER:-mekano_os}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-mekano_os}
+    volumes:
+      - postgres_os_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-mekano_os} -d mekano_os" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - mekano-os-net
+
+  # SNS + SQS locais (emulação AWS)
+  localstack:
+    image: localstack/localstack:3
+    container_name: mekano-os-localstack
+    restart: unless-stopped
+    ports:
+      - "4566:4566"
+    environment:
+      SERVICES: sns,sqs
+      AWS_DEFAULT_REGION: us-east-1
+    volumes:
+      - ./scripts/localstack-init.sh:/etc/localstack/init/ready.d/init.sh:ro
+    healthcheck:
+      test: [ "CMD-SHELL", "awslocal sns list-topics >/dev/null 2>&1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - mekano-os-net
+
+volumes:
+  postgres_os_data:
+
+networks:
+  mekano-os-net:
+    driver: bridge

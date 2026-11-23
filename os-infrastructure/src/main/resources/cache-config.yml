@@ -1,0 +1,24 @@
+# --- Cache Caffeine (leituras de dados de referência do monolito e OS) ---
+quarkus:
+  cache:
+    caffeine:
+      clientes:
+        initial-capacity: 10
+        maximum-size: 100
+        expire-after-write: 60s
+      veiculos:
+        initial-capacity: 10
+        maximum-size: 100
+        expire-after-write: 60s
+      servicos:
+        initial-capacity: 10
+        maximum-size: 200
+        expire-after-write: 120s
+      pecas:
+        initial-capacity: 20
+        maximum-size: 200
+        expire-after-write: 60s
+      ordens_servico:
+        initial-capacity: 20
+        maximum-size: 500
+        expire-after-write: 30s

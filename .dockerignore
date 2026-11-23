@@ -1,0 +1,13 @@
+*
+!.mvn/**
+!mvnw
+!mvnw.cmd
+!pom.xml
+!os-domain/pom.xml
+!os-domain/src/**
+!os-application/pom.xml
+!os-application/src/**
+!os-infrastructure/pom.xml
+!os-infrastructure/src/**
+!os-rest/pom.xml
+!os-rest/src/**

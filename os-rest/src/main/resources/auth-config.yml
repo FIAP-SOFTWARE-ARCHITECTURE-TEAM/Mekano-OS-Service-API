@@ -1,0 +1,15 @@
+# --- Validação JWT: apenas chave pública (tokens emitidos pelo Mekano-API / Lambda Auth) ---
+mp:
+  jwt:
+    verify:
+      publickey:
+        location: publicKey.pem
+        algorithm: eddsa
+      issuer: mekano-api
+
+quarkus:
+  http:
+    auth:
+      proactive: false
+  analytics:
+    disabled: true

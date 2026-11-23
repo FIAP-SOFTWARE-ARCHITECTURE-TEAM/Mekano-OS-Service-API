@@ -1,0 +1,38 @@
+# --- Datasource, Hibernate, Flyway (RDS exclusivo do serviço de OS) ---
+quarkus:
+  datasource:
+    db-kind: postgresql
+    username: ${DB_USER:mekano_os}
+    password: ${DB_PASSWORD:mekano_os}
+    jdbc:
+      url: ${DB_URL:jdbc:postgresql://localhost:5433/mekano_os}
+  flyway:
+    migrate-at-start: true
+    connect-retries: 5
+  hibernate-orm:
+    schema-management:
+      strategy: validate
+
+"%dev":
+  quarkus:
+    hibernate-orm:
+      log:
+        sql: true
+
+"%prod":
+  quarkus:
+    hibernate-orm:
+      log:
+        sql: false
+
+"%test":
+  quarkus:
+    datasource:
+      db-kind: h2
+      jdbc:
+        url: jdbc:h2:mem:mekano_os;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    flyway:
+      migrate-at-start: false
+    hibernate-orm:
+      database:
+        generation: drop-and-create
