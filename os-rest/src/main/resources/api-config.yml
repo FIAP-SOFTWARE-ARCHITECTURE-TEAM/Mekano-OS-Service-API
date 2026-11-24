@@ -13,14 +13,45 @@ quarkus:
       access-control-max-age: 24H
   jackson:
     timezone: America/Sao_Paulo
+  rest-client:
+    mekano-api:
+      url: ${MEKANO_API_URL:http://localhost:8080}
+      connect-timeout: 2000
+      read-timeout: 3000
+  sns:
+    endpoint-override: ${AWS_ENDPOINT_OVERRIDE:http://localhost:4566}
+    aws:
+      region: ${AWS_REGION:us-east-1}
+  sqs:
+    endpoint-override: ${AWS_ENDPOINT_OVERRIDE:http://localhost:4566}
+    aws:
+      region: ${AWS_REGION:us-east-1}
 
-# Monolito Mekano-API (consulta de cliente, veículo, catálogo e estoque).
-# Os REST clients (Fase 3) usam: quarkus.rest-client.mekano-api.url
+# Mensageria SNS/SQS (Em dev usa LocalStack)
 mekano:
-  api:
-    url: ${MEKANO_API_URL:http://localhost:8080}
   events:
-    # Mensageria SNS/SQS (Fase 3). Em dev usa LocalStack.
     topic-arn: ${OS_EVENTS_TOPIC_ARN:arn:aws:sns:us-east-1:000000000000:os-events.fifo}
-    aws-endpoint: ${AWS_ENDPOINT_OVERRIDE:http://localhost:4566}
-    aws-region: ${AWS_REGION:us-east-1}
+    inbound-queue-url: ${OS_INBOUND_QUEUE_URL:}
+    relay-enabled: ${OS_OUTBOX_RELAY_ENABLED:false}
+    consumer-enabled: ${OS_SQS_CONSUMER_ENABLED:false}
+
+"%test":
+  quarkus:
+    sns:
+      devservices:
+        enabled: false
+      aws:
+        credentials:
+          type: static
+          static-provider:
+            access-key-id: test
+            secret-access-key: test
+    sqs:
+      devservices:
+        enabled: false
+      aws:
+        credentials:
+          type: static
+          static-provider:
+            access-key-id: test
+            secret-access-key: test

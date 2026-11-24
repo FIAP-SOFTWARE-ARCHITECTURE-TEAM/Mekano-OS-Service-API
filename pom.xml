@@ -31,6 +31,7 @@
 		<jandex.version>3.5.3</jandex.version>
 		<assertj.version>3.27.3</assertj.version>
 		<jacoco.version>0.8.15</jacoco.version>
+		<quarkus-amazon-services.version>3.23.0</quarkus-amazon-services.version>
 	</properties>
 
 	<dependencyManagement>
@@ -40,6 +41,13 @@
 				<groupId>${quarkus.platform.group-id}</groupId>
 				<artifactId>${quarkus.platform.artifact-id}</artifactId>
 				<version>${quarkus.platform.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.quarkiverse.amazonservices</groupId>
+				<artifactId>quarkus-amazon-services-bom</artifactId>
+				<version>${quarkus-amazon-services.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
