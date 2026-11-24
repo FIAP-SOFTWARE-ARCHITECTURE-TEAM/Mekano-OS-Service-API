@@ -22,7 +22,8 @@ import com.fiap.mekano.os.infrastructure.entity.ItemOsEntity;
 import com.fiap.mekano.os.infrastructure.entity.OrdemDeServicoEntity;
 import com.fiap.mekano.os.infrastructure.mapper.OrdemDeServicoEntityMapper;
 
-import io.quarkus.cache.CacheInvalidate;
+import io.quarkus.cache.Cache;
+import io.quarkus.cache.CacheName;
 import io.quarkus.cache.CacheResult;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
@@ -45,16 +46,19 @@ public class OrdemDeServicoRepositoryImpl implements OrdemDeServicoRepositoryPor
 
     private final OrdemDeServicoPanacheRepository panacheRepository;
     private final OrdemDeServicoEntityMapper mapper;
+    private final Cache cache;
 
     public OrdemDeServicoRepositoryImpl(OrdemDeServicoPanacheRepository panacheRepository,
-                                        OrdemDeServicoEntityMapper mapper) {
+                                        OrdemDeServicoEntityMapper mapper,
+                                        @CacheName(CacheNames.ORDENS_SERVICO) Cache cache) {
         this.panacheRepository = panacheRepository;
         this.mapper = mapper;
+        this.cache = cache;
     }
 
     @Override
-    @CacheInvalidate(cacheName = CacheNames.ORDENS_SERVICO)
     public OrdemDeServico save(OrdemDeServico os) {
+        cache.invalidate(os.getId()).await().indefinitely();
         Optional<OrdemDeServicoEntity> existing = panacheRepository
                 .find("uuid = ?1", os.getId()).firstResultOptional();
 
@@ -176,8 +180,8 @@ public class OrdemDeServicoRepositoryImpl implements OrdemDeServicoRepositoryPor
     }
 
     @Override
-    @CacheInvalidate(cacheName = CacheNames.ORDENS_SERVICO)
     public void markAsDeleted(UUID id) {
+        cache.invalidate(id).await().indefinitely();
         panacheRepository.find("uuid = ?1 AND isActive = true", id)
                 .firstResultOptional()
                 .ifPresent(entity -> {
