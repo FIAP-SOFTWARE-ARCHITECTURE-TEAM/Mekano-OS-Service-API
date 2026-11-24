@@ -18,10 +18,40 @@ quarkus:
       url: ${MEKANO_API_URL:http://localhost:8080}
       connect-timeout: 2000
       read-timeout: 3000
+  sns:
+    endpoint-override: ${AWS_ENDPOINT_OVERRIDE:http://localhost:4566}
+    aws:
+      region: ${AWS_REGION:us-east-1}
+  sqs:
+    endpoint-override: ${AWS_ENDPOINT_OVERRIDE:http://localhost:4566}
+    aws:
+      region: ${AWS_REGION:us-east-1}
 
-# Mensageria SNS/SQS (Fase 3c). Em dev usa LocalStack.
+# Mensageria SNS/SQS (Em dev usa LocalStack)
 mekano:
   events:
     topic-arn: ${OS_EVENTS_TOPIC_ARN:arn:aws:sns:us-east-1:000000000000:os-events.fifo}
-    aws-endpoint: ${AWS_ENDPOINT_OVERRIDE:http://localhost:4566}
-    aws-region: ${AWS_REGION:us-east-1}
+    inbound-queue-url: ${OS_INBOUND_QUEUE_URL:}
+    relay-enabled: ${OS_OUTBOX_RELAY_ENABLED:false}
+    consumer-enabled: ${OS_SQS_CONSUMER_ENABLED:false}
+
+"%test":
+  quarkus:
+    sns:
+      devservices:
+        enabled: false
+      aws:
+        credentials:
+          type: static
+          static-provider:
+            access-key-id: test
+            secret-access-key: test
+    sqs:
+      devservices:
+        enabled: false
+      aws:
+        credentials:
+          type: static
+          static-provider:
+            access-key-id: test
+            secret-access-key: test
